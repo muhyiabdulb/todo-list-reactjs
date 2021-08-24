@@ -1,37 +1,42 @@
 import './Todo.css'
+import React from 'react'
 import TodoList from '../todo-list/TodoList'
 import TodoCreate from '../todo-create/TodoCreate'
-import { useState } from 'react'
 
-const Todo = () => {
-    // nampung data todo
-    const [getTodos, setTodos] = useState([
-        // { id: 1, title: 'Makan' },
-        // { id: 2, title: 'Minum' },
-        // { id: 3, title: 'Lari' },
-    ])
-
-    // buat todo
-    const eventCreateTodo = (todo) => {
-        setTodos(getTodos.concat(todo))
-        console.log(getTodos)
+class Todo extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            getTodos: [],
+        }
     }
 
-    function deleteTodo(index){
-        console.log(index)
-        setTodos(prevState => prevState.filter((_, i) => i !== index))
-        console.log('ini dihapus' + [index])
+    eventCreateTodo = (todo) => {
+        this.setState({
+            getTodos: this.state.getTodos.concat(todo)
+        })
+        console.log(this.state.getTodos)
     }
 
-    return(
-        <div>
-            <h2>Todo List</h2>
-            {/* component create todo */}
-            <TodoCreate onCreateTodo={eventCreateTodo}/>
-            {/* component toto list */}
-            <TodoList dataTodos={getTodos} click={deleteTodo}/>
-        </div>
-    )
+    deleteTodo = (index) => {
+        console.log("ini index" + index)
+        var array = [...this.state.getTodos] // make a separate copy of the array
+        console.log(array)
+        if (index !== -1) {
+            array.splice(index, 1)
+            this.setState({getTodos: array})
+        }
+    }
+
+    render() {
+        return(
+            <div>
+                <h2>Todo List</h2>
+                <TodoCreate onCreateTodo={this.eventCreateTodo} />
+                <TodoList dataTodos={this.state.getTodos} click={this.deleteTodo} />
+            </div>
+        )
+    }
 }
 
 export default Todo

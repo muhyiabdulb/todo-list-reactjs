@@ -1,53 +1,56 @@
-import { useState } from 'react'
+import React from 'react'
 import  './TodoCreate.css'
 
-const TodoCreate = (props) => {
-    // getInputTodo buat ngambil data
-    // setInputTodo atur data
-    const [getInputTodo, setInputTodo] = useState('')
+class TodoCreate extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            getInputTodo: '',
+            validation: false
+        }
+    }
 
-    // validasi form
-    const [validation, setValidation] = useState(false)
-
-    // button data baru
-    const handleSubmit = (event) => {
+    handleSubmit = (event) => {
         event.preventDefault()
-        // nampung data baru
-        if(getInputTodo === '') {
+        if(this.state.getInputTodo === '') {
             console.log('ini kosong')
-            setValidation(true)
+            this.setState({
+                validation: true
+            })
         } else {
-            var now = new Date()
-            const newTodo = {
+            let now = new Date()
+            var newTodo = {
                 id: Math.floor(Math.random() * 100) + 1,
-                title: getInputTodo,
+                title: this.state.getInputTodo,
                 date: now.getDate() + " " + now.toLocaleString('default', { month: 'long' }) + " " + now.getFullYear() + " " + now.getHours() + "." + now.getMinutes(),
             }
-
+            console.log(newTodo)
             // masukkan data baru
-            props.onCreateTodo(newTodo)
+            this.props.onCreateTodo(newTodo)
             // kosongkan text
-            setInputTodo('')
-            // console.log(newTodo)
+            this.setState({
+                getInputTodo: ''
+            })
         }
-      
     }
 
-    // handle input todo
-    const handleInputTodo = (event) => {
-        setInputTodo(event.target.value)
-        setValidation(false)
-        console.log(getInputTodo)
+    handleInputTodo = (event) => {
+        this.setState({
+            getInputTodo: event.target.value,
+            validation: false
+        })
+        console.log(this.state.getInputTodo)
     }
 
-    return(
-        <form className="todo-form" onSubmit={handleSubmit}>
-            <input type="text" className={validation ? 'text-field bg' : 'text-field'} value={getInputTodo} onChange={handleInputTodo} />  { validation ? <p>Require</p> : '' }
-           
-            <button className="button" type="submit">Add</button>
-        </form>
-    )
-
+    render() {
+        return(
+            <form className="todo-form" onSubmit={this.handleSubmit}>
+                <input type="text" className={this.state.validation ? 'text-field bg' : 'text-field'} value={this.state.getInputTodo} onChange={this.handleInputTodo} />  { this.state.validation ? <p>Require</p> : '' }
+            
+                <button className="button" type="submit">Add</button>
+            </form> 
+        )
+    }
 }
 
 export default TodoCreate
